@@ -2,8 +2,8 @@
 session_start();
 require '../config/db.php';
 if (!isset($_SESSION['admin_id'])) { header('Location: login.php'); exit; }
+$page_title = "Manage Brands";
 
-// Handle Add
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_brand'])) {
     $name = trim($_POST['name']);
     $stmt = $conn->prepare("INSERT INTO brands (name) VALUES (?)");
@@ -13,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_brand'])) {
     exit;
 }
 
-// Handle Delete
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
     $conn->query("DELETE FROM brands WHERE id = $id");
@@ -21,68 +20,95 @@ if (isset($_GET['delete'])) {
     exit;
 }
 
-$brands = $conn->query("SELECT * FROM brands ORDER BY id DESC");
+$brands = $conn->query("
+    SELECT b.*, COUNT(p.id) as product_count 
+    FROM brands b 
+    LEFT JOIN products p ON b.id = p.brand_id 
+    GROUP BY b.id 
+    ORDER BY b.id DESC
+");
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Manage Brands | Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brands | Admin</title>
     <link rel="stylesheet" href="../assets/css/admin.css">
-    <style>
-        .table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        .table th, .table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
-        .table th { background: var(--light-gray); color: var(--dark); }
-        .form-inline { display: flex; gap: 1rem; margin-bottom: 2rem; background: var(--white); padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow); }
-        .action-btn { padding: 0.4rem 0.8rem; color: #fff; border-radius: 4px; background: var(--danger); font-size: 0.9rem; }
-    </style>
 </head>
 <body>
     <div class="admin-layout">
         <?php include '../includes/admin_sidebar.php'; ?>
         <div class="main-content">
-            <div class="topvar">
-                <h2>Brands</h2>
-            </div>
-            <div class="content-pad">
-                
-                <form method="POST" class="form-inline">
-                    <div style="flex: 3;">
-                        <input type="text" name="name" placeholder="Brand Name (e.g. Samsung, Apple)" required style="width:100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px;">
-                    </div>
-                    <div>
-                        <button type="submit" name="add_brand" class="btn">Add Brand</button>
-                    </div>
-                </form>
+            <?php include '../includes/admin_header.php'; ?>
+            
+            <div class="content-wrapper">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 1.5rem;">
+                    <div></div>
+                    <button class="btn btn-primary" onclick="showModal('addBrandModal')">
+                        <i class="fa-solid fa-plus"></i> Add Brand
+                    </button>
+                </div>
 
-                <div style="background: var(--white); padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow);">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Brand Name</th>
-                                <th>Created</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while($row = $brands->fetch_assoc()): ?>
-                            <tr>
-                                <td><?php echo $row['id']; ?></td>
-                                <td><strong><?php echo htmlspecialchars($row['name']); ?></strong></td>
-                                <td><?php echo date('M d, Y', strtotime($row['created_at'])); ?></td>
-                                <td>
-                                    <a href="brands.php?delete=<?php echo $row['id']; ?>" class="action-btn" onclick="return confirm('Delete this brand?');">Delete</a>
-                                </td>
-                            </tr>
-                            <?php endwhile; ?>
-                            <?php if($brands->num_rows == 0): ?>
-                            <tr><td colspan="4" style="text-align:center;">No brands found.</td></tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Brand Name</th>
+                                    <th>Products Count</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while($row = $brands->fetch_assoc()): ?>
+                                <tr>
+                                    <td>#<?php echo $row['id']; ?></td>
+                                    <td><strong><?php echo htmlspecialchars($row['name']); ?></strong></td>
+                                    <td>
+                                        <span class="badge info"><?php echo $row['product_count']; ?> Products</span>
+                                    </td>
+                                    <td>
+                                        <div style="display:flex; gap:0.5rem;">
+                                            <a href="brands.php?delete=<?php echo $row['id']; ?>" class="btn btn-danger btn-icon" onclick="return confirm('Delete this brand?');" title="Delete"><i class="fa-solid fa-trash"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php endwhile; ?>
+                                <?php if($brands->num_rows == 0): ?>
+                                <tr><td colspan="4" style="text-align:center; padding:3rem;">No brands found.</td></tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+            
+            <?php include '../includes/admin_footer.php'; ?>
+
+            <!-- Add Modal -->
+            <div id="addBrandModal" class="modal">
+                <div class="modal-content" style="max-width:400px;">
+                    <form method="POST">
+                        <div class="modal-header">
+                            <h3>Add New Brand</h3>
+                            <button type="button" class="close-btn" onclick="hideModal('addBrandModal')"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Brand Name</label>
+                                <input type="text" name="name" class="form-control" required placeholder="e.g. Samsung">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline" onclick="hideModal('addBrandModal')">Cancel</button>
+                            <button type="submit" name="add_brand" class="btn btn-primary">Save Brand</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
         </div>
     </div>
 </body>

@@ -32,26 +32,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login | Electronic Shop</title>
     <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-    <div class="login-container">
-        <div class="login-box">
-            <h2>Admin Gateway</h2>
-            <?php if($error) echo "<p style='color:var(--danger); text-align:center; margin-bottom:1rem;'>$error</p>"; ?>
-            <form method="POST">
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" name="username" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" name="password" required>
-                </div>
-                <button type="submit" class="btn">Login Securely</button>
-            </form>
+<body class="login-page">
+    <div class="login-card">
+        <div class="login-header">
+            <div style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;">
+                <i class="fa-solid fa-bolt"></i>
+            </div>
+            <h1>Welcome Back</h1>
+            <p>Enter your credentials to access the admin portal</p>
         </div>
+        
+        <?php if($error): ?>
+        <div class="alert alert-danger">
+            <i class="fa-solid fa-triangle-exclamation"></i> <?php echo $error; ?>
+        </div>
+        <?php endif; ?>
+        
+        <form method="POST">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" class="form-control" required placeholder="admin">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem; padding: 0.75rem;">
+                Login Securely
+            </button>
+        </form>
     </div>
 </body>
 </html>
