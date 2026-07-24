@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary: #2563EB;
+    --sidebar: #1E293B;
+    --background: #F5F7FA;
+    --success: #22C55E;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --white: #ffffff;
+    --dark: #1f2937;
+    --gray: #6c757d;
+    --border: #e5e7eb;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: var(--background);
+    color: var(--dark);
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Admin Layout */
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background: var(--sidebar);
+    color: var(--white);
+    padding: 1.5rem 1rem;
+    position: fixed;
+    height: 100vh;
+    transition: 0.3s;
+}
+
+.sidebar-brand {
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--white);
+}
+
+.sidebar-menu {
+    list-style: none;
+}
+
+.sidebar-menu li {
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    color: #94a3b8;
+    transition: 0.3s;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+    background: var(--primary);
+    color: var(--white);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    margin-left: 260px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar */
+.top-navbar {
+    background: var(--white);
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+/* Content Padding */
+.content-wrapper {
+    padding: 2rem;
+    flex: 1;
+}
+
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--dark);
+}
+
+/* Dashboard Cards */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.card {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.card h4 {
+    color: var(--gray);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.card h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-top: 0.5rem;
+}
+
+/* Tables */
+.table-container {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.table th {
+    font-weight: 600;
+    color: var(--gray);
+    background: var(--background);
+}
+
+.table tr:hover {
+    background: #f9fafb;
+}
+
+/* Badges */
+.badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge-danger {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.badge-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* Buttons & Inputs */
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1.25rem;
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn-danger {
+    background: var(--danger);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
